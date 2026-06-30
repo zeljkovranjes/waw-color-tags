@@ -1,0 +1,68 @@
+============================================================================
+Call of Duty: World at War - text color code palette (g_color_table)
+============================================================================
+Extracted live from memory via x32dbg (MCP) on the running process.
+
+Process : CoDWaW.exe  (PID 21436, Steam build)
+          D:\SteamLibrary\steamapps\common\Call of Duty World at War\CoDWaW.exe
+Module  : codwaw.exe   base 0x00400000
+Table   : g_color_table
+          runtime address 0x00838680   (RVA 0x00438680)
+          8 entries x vec4 float RGBA (16 bytes each) = 128 bytes
+          immediately followed by a pi (0x40490fdb) constant block, which
+          marks the end of the table.
+
+These are the colors applied to "^" + digit codes in names / clan tags / chat
+(e.g. "^1RED^7"). Values are stored as 32-bit floats (0.0-1.0) per channel.
+8-bit and hex columns are float * 255, rounded.
+
+----------------------------------------------------------------------------
+Code  Name     RGBA (float)              RGBA (0-255)          Hex (RGB)  Hex (RGBA)
+----------------------------------------------------------------------------
+^0    black    0.00, 0.00, 0.00, 1.00    0,   0,   0,   255    #000000    #000000FF
+^1    red      1.00, 0.20, 0.20, 1.00    255, 51,  51,  255    #FF3333    #FF3333FF
+^2    green    0.00, 1.00, 0.00, 1.00    0,   255, 0,   255    #00FF00    #00FF00FF
+^3    yellow   1.00, 1.00, 0.00, 1.00    255, 255, 0,   255    #FFFF00    #FFFF00FF
+^4    blue     0.00, 0.00, 1.00, 1.00    0,   0,   255, 255    #0000FF    #0000FFFF
+^5    cyan     0.00, 1.00, 1.00, 1.00    0,   255, 255, 255    #00FFFF    #00FFFFFF
+^6    pink     1.00, 0.36, 1.00, 1.00    255, 92,  255, 255    #FF5CFF    #FF5CFFFF
+^7    white    1.00, 1.00, 1.00, 1.00    255, 255, 255, 255    #FFFFFF    #FFFFFFFF
+----------------------------------------------------------------------------
+
+Notes
+-----
+* ^1 red and ^6 pink are NOT pure primaries - red is softened to 0.2 on the
+  G/B channels (#FF3333) and pink is 0.36 green (#FF5CFF). The rest are pure
+  0/1 channel values.
+* Exact stored floats for the non-trivial channels:
+    ^1  0x3e4ccccd = 0.20000000   -> 0.2  * 255 = 51.0  -> 0x33
+    ^6  0x3eb851ec = 0.36000001   -> 0.36 * 255 = 91.8  -> 0x5C (rounded 92)
+* Codes ^8 and ^9: the engine indexes with (c - '0') & 7 (idTech3 ColorIndex),
+  so ^8 wraps to ^0 (black) and ^9 wraps to ^1 (red). Only 8 distinct colors
+  exist in the table.
+
+Raw bytes at 0x00838680 (128 bytes, little-endian floats)
+---------------------------------------------------------
+0x838680  00 00 00 00 00 00 00 00 00 00 00 00 00 00 80 3f   ^0 (0,0,0,1)
+0x838690  00 00 80 3f cd cc 4c 3e cd cc 4c 3e 00 00 80 3f   ^1 (1,0.2,0.2,1)
+0x8386a0  00 00 00 00 00 00 80 3f 00 00 00 00 00 00 80 3f   ^2 (0,1,0,1)
+0x8386b0  00 00 80 3f 00 00 80 3f 00 00 00 00 00 00 80 3f   ^3 (1,1,0,1)
+0x8386c0  00 00 00 00 00 00 00 00 00 00 80 3f 00 00 80 3f   ^4 (0,0,1,1)
+0x8386d0  00 00 00 00 00 00 80 3f 00 00 80 3f 00 00 80 3f   ^5 (0,1,1,1)
+0x8386e0  00 00 80 3f ec 51 b8 3e 00 00 80 3f 00 00 80 3f   ^6 (1,0.36,1,1)
+0x8386f0  00 00 80 3f 00 00 80 3f 00 00 80 3f 00 00 80 3f   ^7 (1,1,1,1)
+
+Related array (NOT the text palette)
+------------------------------------
+A separate 16-color vec4 array sits just after, at 0x00839710. It also begins
+black/red/green but index 3 is (0,0.7,0) and white lands at index 14, so it is
+some UI/HUD palette - not the "^" color codes. Captured for reference:
+  0  (0,    0,    0   )  #000000      8  (0.5,  0.5,  0   )  #808000
+  1  (1,    0,    0   )  #FF0000      9  (1,    0,    1   )  #FF00FF
+  2  (0,    1,    0   )  #00FF00     10  (0,    1,    1   )  #00FFFF
+  3  (0,    0.7,  0   )  #00B300     11  (0,    0.75, 0.75)  #00BFBF
+  4  (0,    0,    1   )  #0000FF     12  (0,    0.5,  0.5 )  #008080
+  5  (0.5,  0.5,  1   )  #8080FF     13  (0,    0.25, 0.25)  #004040
+  6  (1,    1,    0   )  #FFFF00     14  (1,    1,    1   )  #FFFFFF
+  7  (0.75, 0.75, 0   )  #BFBF00     15  (0.75, 0.75, 0.75)  #BFBFBF
+============================================================================
