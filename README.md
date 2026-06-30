@@ -2,7 +2,7 @@
 
 Browser recreations of the animated clan tag effects from Call of Duty: World at War (2008).
 
-A preview can be seen at https://blog.zeljkovranjes.com/posts/call-of-duty-world-at-war-clan-tag-effects
+A preview can be seen [on my blog](https://blog.zeljkovranjes.com/posts/call-of-duty-world-at-war-clan-tag-effects).
 
 Each effect was reverse engineered from the running game (`CoDWaW.exe`) by attaching a debugger, locating the engine color table and the clan tag dispatcher, and disassembling each animator function. The exact timing, palette, and per letter logic are reproduced in plain JavaScript, with no build step and no dependencies.
 
